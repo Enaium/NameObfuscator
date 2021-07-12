@@ -1,0 +1,53 @@
+import java.text.SimpleDateFormat
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
+}
+
+group 'cn.enaium'
+version '1.0.0'
+
+targetCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_11
+
+jar {
+    manifest.attributes(
+            'Manifest-Version': 1.0,
+            'Main-Class': 'cn.enaium.name.obfuscator.NameObfuscator',
+            "Implementation-Title": "${project.name}",
+            "Implementation-Version": "${project.version}",
+            "Implementation-Vendor": "${project.group}",
+            "Implementation-Timestamp": new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())
+    )
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = 11
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.formdev:flatlaf:1.2'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'org.ow2.asm:asm-tree:9.2'
+    implementation 'org.ow2.asm:asm-commons:9.2'
+    implementation 'org.apache.commons:commons-lang3:3.11'
+}
+
+shadowJar {
+    dependencies {
+        include(dependency('com.formdev:flatlaf'))
+        include(dependency('com.google.code.gson:gson'))
+        include(dependency('org.ow2.asm:asm'))
+        include(dependency('org.ow2.asm:asm-tree'))
+        include(dependency('org.ow2.asm:asm-commons:'))
+        include(dependency('org.apache.commons:commons-lang3'))
+    }
+}
+
+build.dependsOn shadowJar
