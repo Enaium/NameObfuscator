@@ -2,6 +2,7 @@ package cn.enaium.name.obfuscator.ui.layout.center.panel.control;
 
 import cn.enaium.name.obfuscator.Config;
 import cn.enaium.name.obfuscator.annotation.ExcludeUI;
+import cn.enaium.name.obfuscator.dialog.StringListSettingDialog;
 import cn.enaium.name.obfuscator.setting.EnableSetting;
 import cn.enaium.name.obfuscator.setting.Setting;
 import cn.enaium.name.obfuscator.setting.StringListSetting;
@@ -34,36 +35,11 @@ public class SettingPanel extends JPanel {
                         jPanel.add(jCheckBox);
                         jPanel.add(new JLabel(description));
                     } else if (o instanceof StringListSetting) {
-                        DefaultComboBoxModel<String> stringDefaultComboBoxModel = new DefaultComboBoxModel<>();
-                        final var stringJComboBox = new JComboBox<>(stringDefaultComboBoxModel);
-                        stringJComboBox.setName(name);
-                        ((StringListSetting) o).getStringList().forEach(stringDefaultComboBoxModel::addElement);
-                        final var stringListPanel = new JPanel();
-                        stringListPanel.setLayout(new GridLayout(1, 4));
-                        stringListPanel.add(stringJComboBox);
-                        final var jTextField = new JTextField();
-                        stringListPanel.add(jTextField);
-
-                        final var add = new JButton("Add");
-                        final var remove = new JButton("Remove");
-                        add.addActionListener(e -> {
-                            if (!jTextField.getText().isEmpty()) {
-                                stringDefaultComboBoxModel.addElement(jTextField.getText());
-                                ((StringListSetting) o).getStringList().add(jTextField.getText());
-                            }
+                        JButton set = new JButton("Set");
+                        set.addActionListener(e -> {
+                            new StringListSettingDialog((StringListSetting) o);
                         });
-
-                        remove.addActionListener(e -> {
-                            if (stringJComboBox.getModel().getSelectedItem() != null) {
-                                stringDefaultComboBoxModel.removeElement(stringJComboBox.getModel().getSelectedItem());
-                                ((StringListSetting) o).getStringList().remove(stringJComboBox.getModel().getSelectedItem());
-                            }
-                        });
-
-                        stringListPanel.add(add);
-                        stringListPanel.add(remove);
-
-                        jPanel.add(stringListPanel);
+                        jPanel.add(set);
                         jPanel.add(new JLabel(description));
                     }
                 }
